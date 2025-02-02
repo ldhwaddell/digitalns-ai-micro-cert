@@ -1,5 +1,7 @@
 # Introduction to AI transformers
 
+# Module 1.1 - advanced
+
 - AI is the entire domain of creating machines that learn.
 - ML and DL give specific methods to complete this task.
 - One weakness is traditional deep learning models, such as recurrent neural networks, is that they process data sequentially. This is therefore very slow.
@@ -144,3 +146,78 @@
 - Each token embedding is multiplied by the weight matrix of the first linear layer and added to the first bias. This goes through ReLU and then this result is multiplied by the second layer which is made of the second weight matrix and bias.
 - The encoded output from FFN is sent to decoder. Decoder contains attention and its own feed-forward network
 - Decoder sends encoded sequence to masked multi-head attention mechanism. The 'masked' is in how it guesses which token/word will come next. Then then goes through the same position-wise feed-forward and lastly a softmax to calculate the probability distribution of the next token.
+
+# Understanding large language modules (LLMs)
+
+- LLMs are AI systems designed to press and generate human language using advanced transformer architectures
+- GenAI is broader, could be text, image, video, audio, etc
+
+## Traditional Language Models
+
+### N-grams
+
+- Predict next work in sequence based on the preceding n-1 words.
+- Idea that probability of a word depends on the context of last few words, with n representing the number of words considered.
+- Unigram: Only consider current word, no context
+- Bigram: Model considers previous word
+- Trigram: Model considers two previous words
+- Model predicts next word after 'is' by looking at the probability of each word following 'is' based on the training data
+- Limitations:
+  - Limited context: Only capture local dependencies, cannot handle long-range dependencies between words
+  - Data sparsity: If some n-grams don't appear in training data, the model can't make predictions for them
+
+### Bag-of-Words (BoW)
+
+- Represent text as collection of words, without considering order.
+- Breaks text down into individual words, each is assigned a count or weight, treating each word as independent entity
+- Representation: Each doc is represented as a vector where each entry corresponds to the presence or frequency of a word in that document
+- Applications: Document classification
+- Limitations:
+  - Loss of context: BoW ignores word order+ syntax, poor performance when word sequence matters.
+  - Large vocab size: Dimensionality of model increases, making it less efficient.
+
+### Term frequency-inverse document frequency (TF-IDF)
+
+- Evaluates the importance of a word in a document relative to a collection of documents.
+- Accounts for the frequency of a word in a document, and adjusts importance based on the how frequently it appears across all documents in the corpus.
+- Representation: Each document is a vector where each entry corresponds to a words TF-IDF score. High TF-IDF indicates the word is important in a specific document, but rare across the entire corpus.
+- Applications: text mining, text classification, clustering, info retrieval, keyword extraction
+- Limitations:
+  - No contextual understanding: TF-IDF treats words as independent units.
+  - Overemphasis on rare-terms: Rare term means high IDF score, making it seem important
+  - TF-IDF disregards order of words
+
+### Recurrent Neural Networks
+
+- RNNs maintain a hidden state that captures information from all the previous words in the sequence, making them capable of learning long-range dependencies.
+- Key feature: hidden state of RNN is updated at each step in the sequence, allowing model to theoretically remember information from earlier words.
+- For example, embedding layer is input layer that transforms words into vector representations. LSTM (long short term memory) is hidden layer which processes the sequence of word embeddings, captures dependencies between words and maintains memory of past info, and dense layer which is often used as final layer to make predictions.
+- Steps to build RNN:
+
+1. Tokenization: Convert words to tokens, create sequences to train model
+1. Padding: All sequences are padded to ensure equal length for compatibility with the RNN
+1. Model Architecture: Embedding layer maps words to dense vectors. SimpleRNN layer processes sequential data and maintains a hidden state to capture context. Dense layer outputs probabilities for next word.
+1. Training: Train model to predict the next word in the sequence
+1. Prediction: Given seed text, generate next few words by iteratively predicting and appending next word to input.
+
+- Limitations:
+  - Sequential processing (no parallelism): Inefficient as inputs are processed step by step. Makes training slow, and inefficient on modern hardware.
+  - Vanishing gradient: RNNs struggle with learning extreme long-range dependencies due to vanishing gradient problem, where gradients shrunk over time making it hard to propagate information from earlier words.
+  - Limited context: Struggle to capture dependencies in very long sequences.
+
+### Large language models
+
+- Based on transformer architecture. Heart of it is the attention mechanism. Allows model to weigh importance of different parts of the input sequence when processing a specific part. Means model can focus on relevant words/phrases regardless of position.
+- Use encoder-decoder, encoder, or decoder only structure. Encoder processes input sequence and generates contextual representation. Decoder generates the output sequence based on this representation.
+- They can process entire input sequence in parallel, making training much faster.
+- Explicit feature extraction: Manual process of identifying specific features from raw data that are relevant to a ML task.
+- Parameter size: total # of learnable weights or connections within the model.
+- LLMs vs traditional NLP:
+
+| Method       | Parameter Size   | Context Length                                      | Capabilities                                      |
+|-------------|----------------|-------------------------------------------------|--------------------------------------------------|
+| n-gram      | Small (fixed n) | Limited (n words)                               | Basic sequence prediction                      |
+| Bag-of-Words | Small          | No context                                     | Word frequency analysis                        |
+| RNN         | Moderate       | Dependent on hidden state, limited by vanishing gradients | Sequential data processing, limited long-range dependencies |
+| GPT-3       | 175 billion    | Up to 2048 tokens                               | Long-range context recognition, text generation |
+| BERT        | 110 million    | Bidirectional (entire sequence)                 | Contextual understanding, classification      |
