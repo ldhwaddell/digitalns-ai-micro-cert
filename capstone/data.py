@@ -1,7 +1,7 @@
 from datasets import load_dataset
 
 dataset_name = "Yelp/yelp_review_full"
-sample_size = 200000
+sample_size = 50000
 test_size = 0.3  # 30% test split
 
 full_dataset = load_dataset(dataset_name, split="train")
